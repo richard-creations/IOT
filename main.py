@@ -8,6 +8,8 @@ try:
 except ImportError: 
     print("No module named 'google' found")
 
+r = sr.Recognizer() 
+
 engine = pyttsx3.init()
 
 #generate a list of all audio cards/microphones
@@ -56,7 +58,7 @@ deviceList['speaker'] = {'bedroom':{'status': 0 }, 'google home':{'status': 0 },
 
 
 
-#################### QUESTION SYNTAX ###################
+#################### QUESTION SYNTAX  CHECK ###################
 question_tags = ('what', 'how', 'who', 'where', 'when', 'is it')
 question_follow = ('are', 'is', 'who', 'many', 'much', 'can', 'was', 'old')
 
@@ -74,15 +76,44 @@ def isQuestion(text1):
 
 def deviceSwitch(code, text):
     success = 0
+    categoryFound = False
+    deviceFound = False
     for device in deviceList:
         if device in text:
-           # print(device) 
+            categoryFound = True
             for deviceName in deviceList[device]:
                 if deviceName in text:
-                   # print(deviceName)
+                    deviceFound = True
                     deviceList[device][deviceName]['status'] = code
                     success = 1
                     break
+            if(categoryFound and not deviceFound):
+                print(f"Which {device} do you mean?")
+                engine.say("Which "+ device + "do you mean?")
+                engine.runAndWait()
+                for name in deviceList[device]:
+                    engine.say(name)
+                engine.runAndWait()
+                #  RETRY DEVICE SEARCH
+                for _ in range(3): 
+                    r = sr.Recognizer() 
+                    with sr.Microphone(device_index = device_id) as source: 
+                                                                                       
+                        print("Please specify device:")                                                                                   
+                        audio = r.listen(source, phrase_time_limit=4)
+                    try:
+                        text = r.recognize_google(audio)
+                        print(f"You said '{text}'")
+                        for deviceName in deviceList[device]:
+                            if deviceName in text:
+                                deviceFound = True
+                                deviceList[device][deviceName]['status'] = code
+                                success = 1
+                                break
+                    except sr.UnknownValueError:
+                        print("Could not understand audio")
+                    except sr.RequestError as e:
+                        print("Could not request results; {0}".format(e))
             break
 
     if success == 1:      
@@ -94,6 +125,7 @@ def deviceSwitch(code, text):
             print(f'{deviceName} {device} is now turned on')
             engine.say(deviceName + " "+ device +" is now turned on")
             engine.runAndWait()
+            
         print(deviceList)
     else:
         print("Sorry, I don't recognize that device.")
@@ -131,22 +163,35 @@ def processText(text):
         engine.say(heading_object[0].getText())
         engine.runAndWait()
         print("------")
+    else: 
+        print("unintelligible")
+ 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     while("shut down" not in text): 
         r = sr.Recognizer() 
         with sr.Microphone(device_index = device_id) as source: 
-            r.adjust_for_ambient_noise(source)                                                                      
-            print("Speak:")                                                                                   
-            audio = r.listen(source) 
+            r.adjust_for_ambient_noise(source, duration = 3)  
+            print("Say Hey John...")
+            text = ''
+            ##### wait for "hey John"... #####
+            while('John' not in text):
+                try: 
+                    text = r.recognize_google(r.listen(source, phrase_time_limit=3) )
+                except sr.UnknownValueError:
+                    continue
+            ##### START TAKING COMMAND... #####
+            print("I am listening...")
+           # print("Set minimum energy threshold to {}".format(r.energy_threshold))                                                                                                                                        
+            audio = r.listen(source, phrase_time_limit=6) 
         try:
             text = r.recognize_google(audio)
             print(f"You said '{text}'")
             processText(text.lower())
         
         except sr.UnknownValueError:
-            print("Could not understand audio")
+            continue
         except sr.RequestError as e:
             print("Could not request results; {0}".format(e))
     print("shutting down...")
