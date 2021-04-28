@@ -4,7 +4,6 @@ from DeviceManager import DeviceManager
 from VoiceAssistant import VoiceAssistant
 from MicManager import MicManager
 import speech_recognition as sr  
-import pyttsx3
 import bs4
 import requests
 
