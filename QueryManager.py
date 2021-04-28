@@ -37,8 +37,8 @@ class QueryManager():
     ##################### END QUESTION TEXT ##############
 
 
-    def getResults(self, text):
-        print("I have to look that up...")
+    def searchGoogle(self, text):
+        print("Looking that up...")
         url = 'https://google.com/search?q=' + text
         
         # Fetch the URL data using requests.get(url),

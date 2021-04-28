@@ -20,7 +20,7 @@ def processText(text):
         deviceManager.deviceSwitch(0, text)
     
     elif queryManager.isQuestion(text):
-        queryManager.getResults(text)
+        queryManager.searchGoogle(text)
     else: 
         print("unintelligible")
  
@@ -40,8 +40,8 @@ if __name__ == "__main__":
                     text = r.recognize_google(r.listen(source, phrase_time_limit=3) )
                 except micManager.getSR().UnknownValueError:
                     continue
-            ##### START TAKING COMMAND... #####
 
+            ##### STARTS TAKING COMMAND... #####
             print("I am listening...")                                                                                                                                      
             audio = r.listen(source, phrase_time_limit=6) 
         try:
