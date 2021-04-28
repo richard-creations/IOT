@@ -16,9 +16,6 @@ class MicManager:
             if microphone_name == self.mic_name:
                 self.device_id = i
 
-        #print(f"Using mic: {self.mic_list[self.device_id]}")
-        # get audio from the microphone 
-    
     def getMicName(self):
         return self.mic_name
     

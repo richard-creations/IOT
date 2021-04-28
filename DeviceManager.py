@@ -4,6 +4,13 @@ from MicManager import MicManager
 
 voiceEngine = VoiceAssistant().getEngine()
 
+##### MIC SET-UP ########                                                                      
+micManager = MicManager()
+r = micManager.r
+sr = micManager.getSR()
+##### END  SPEECH SET-UP ########
+
+
 ##################### DEVICE LISTS ##################
 text = ''
 deviceList = {}
@@ -11,12 +18,7 @@ deviceList['light'] = {'bedroom':{'status': 0 }, 'living room':{'status': 0 }, '
 deviceList['speaker'] = {'bedroom':{'status': 0 }, 'google home':{'status': 0 }, 'jbl':{'status': 0 }, 'amazon echo':{'status': 0 }}
 #################### END DEVICE LISTS ##################
 
-##### SPEECH VOICE SET-UP ########                                                                      
-micManager = MicManager()
-##### END  SPEECH SET-UP ########
 
-r = micManager.r
-sr = micManager.getSR()
 
 class DeviceManager:
     def __init__(self):
@@ -63,13 +65,13 @@ class DeviceManager:
                         except sr.RequestError as e:
                             print("Could not request results; {0}".format(e))
                 break
-
+        #SUCCESS MESSAGE#
         if success == 1:      
             if code == 0:
                 print(f'{deviceName} {device} is now turned off')
                 voiceEngine.say(deviceName + " "+ device +" is now turned off")
                 voiceEngine.runAndWait()
-            if code == 1:
+            elif code == 1:
                 print(f'{deviceName} {device} is now turned on')
                 voiceEngine.say(deviceName + " "+ device +" is now turned on")
                 voiceEngine.runAndWait()

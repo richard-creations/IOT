@@ -13,7 +13,7 @@ class VoiceAssistant:
 
         """VOLUME"""
         self.volume = self.engine.getProperty('volume')   #getting to know current volume level (min=0 and max=1)
-        self.engine.setProperty('volume',1.0)    # setting up volume level  between 0 and 1
+        self.engine.setProperty('volume',1.0)               # setting up volume level  between 0 and 1
 
         """VOICE"""
         self.voices = self.engine.getProperty('voices')       #getting details of current voice
